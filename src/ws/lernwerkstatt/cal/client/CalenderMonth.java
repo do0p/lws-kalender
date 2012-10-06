@@ -26,6 +26,10 @@ public class CalenderMonth extends Grid {
 
 	}
 
+	public CalenderMonth() {
+		this(new Date());
+	}
+
 	public void resize(int clientWidth) {
 		final int width = (clientWidth - 50 - 70) / 7;
 		final int height = width;
@@ -51,5 +55,11 @@ public class CalenderMonth extends Grid {
 
 	public interface FieldExecutor {
 		void execute(int r, int c, int i);
+	}
+
+
+	public void setDate(Date date) {
+		// TODO Auto-generated method stub
+		
 	}
 }
