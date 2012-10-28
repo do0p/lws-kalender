@@ -9,9 +9,17 @@ public class CalUtil {
 	static Date getFirstDayForCalendar(Date date) {
 		final Date tmpDate = CalendarUtil.copyDate(date);
 		CalendarUtil.setToFirstDayOfMonth(tmpDate);
+		resetTimeToMidnight(tmpDate);
 		final int dayOfWeek = getDayOfWeek(tmpDate);
 		CalendarUtil.addDaysToDate(tmpDate, -dayOfWeek);
 		return tmpDate;
+	}
+
+	static void resetTimeToMidnight(final Date tmpDate) {
+		tmpDate.setTime((tmpDate.getTime() / 1000) * 1000);
+		tmpDate.setHours(0);
+		tmpDate.setMinutes(0);
+		tmpDate.setSeconds(0);
 	}
 
 	static int getWeeksFromDate(Date date) {

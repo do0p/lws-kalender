@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 
+@SuppressWarnings("deprecation")
 public class CalUtilTest {
 
 	private static final Date MON_01_10_2012;

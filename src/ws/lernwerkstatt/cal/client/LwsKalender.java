@@ -1,14 +1,19 @@
 package ws.lernwerkstatt.cal.client;
 
 import java.util.Date;
+import java.util.List;
+
+import ws.lernwerkstatt.cal.shared.Event;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -24,13 +29,17 @@ public class LwsKalender implements EntryPoint {
 	// private static final String SERVER_ERROR = "An error occurred while "
 	// + "attempting to contact the server. Please check your network "
 	// + "connection and try again.";
+	
+	private final EventServiceAsync eventService = GWT.create(EventService.class);
 
 	@SuppressWarnings("deprecation")
 	public void onModuleLoad() {
 
+
 		final Date date = new Date();
 		month = new CalenderMonth(date);
-
+		addEvents(month);
+		
 		month.resize(Window.getClientWidth());
 
 		yearSelection = new ListBox();
@@ -89,10 +98,30 @@ public class LwsKalender implements EntryPoint {
 			date.setDate(1);
 			month = new CalenderMonth(date);
 
+			addEvents(month);
+			
 			month.resize(Window.getClientWidth());
 			panel.remove(1);
 			panel.add(month);
+
 		}
 
+
+	}
+	
+	private void addEvents(final CalenderMonth tmpMonth) {
+		eventService.getEvents(tmpMonth.getStart(), tmpMonth.getEnd(), new AsyncCallback<List<Event>>() {
+			
+			@Override
+			public void onSuccess(List<Event> events) {
+				tmpMonth.setEvents(events);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 }

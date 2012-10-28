@@ -30,4 +30,15 @@
     <url-pattern>/_ah/spi/*</url-pattern>
   </servlet-mapping>
 
+  <!-- Servlets -->
+  <servlet>
+    <servlet-name>eventServlet</servlet-name>
+    <servlet-class>ws.lernwerkstatt.cal.server.server.impl.EventServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>eventServlet</servlet-name>
+    <url-pattern>/lws_kalender/event</url-pattern>
+  </servlet-mapping>  
+   
 </web-app>
