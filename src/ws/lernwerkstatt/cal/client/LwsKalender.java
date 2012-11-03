@@ -3,6 +3,7 @@ package ws.lernwerkstatt.cal.client;
 import java.util.Date;
 import java.util.List;
 
+import ws.lernwerkstatt.cal.client.EventForm.UpdateListener;
 import ws.lernwerkstatt.cal.shared.Event;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -19,27 +20,30 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class LwsKalender implements EntryPoint {
+public class LwsKalender implements EntryPoint, UpdateListener {
 	private ListBox yearSelection;
 	private ListBox monthSelection;
 	private CalenderMonth month;
 	private VerticalPanel panel;
+	private EventForm eventForm;
 
 	//
 	// private static final String SERVER_ERROR = "An error occurred while "
 	// + "attempting to contact the server. Please check your network "
 	// + "connection and try again.";
-	
-	private final EventServiceAsync eventService = GWT.create(EventService.class);
+
+	private final EventServiceAsync eventService = GWT
+			.create(EventService.class);
 
 	@SuppressWarnings("deprecation")
 	public void onModuleLoad() {
 
-
+		eventForm = new EventForm();
+		eventForm.registerUpdateListener(this);
 		final Date date = new Date();
-		month = new CalenderMonth(date);
+		month = new CalenderMonth(date, eventForm);
 		addEvents(month);
-		
+
 		month.resize(Window.getClientWidth());
 
 		yearSelection = new ListBox();
@@ -86,42 +90,56 @@ public class LwsKalender implements EntryPoint {
 
 	}
 
-	public  class SelectionChangeHandler implements ChangeHandler {
+	public class SelectionChangeHandler implements ChangeHandler {
 
 		@SuppressWarnings("deprecation")
 		@Override
 		public void onChange(ChangeEvent event) {
 			final Date date = new Date();
-			date.setYear(Integer.valueOf(yearSelection.getValue(yearSelection.getSelectedIndex())).intValue());
+			date.setYear(Integer.valueOf(
+					yearSelection.getValue(yearSelection.getSelectedIndex()))
+					.intValue());
 			date.setMonth(monthSelection.getSelectedIndex());
 			date.setHours(12);
 			date.setDate(1);
-			month = new CalenderMonth(date);
-
-			addEvents(month);
-			
-			month.resize(Window.getClientWidth());
-			panel.remove(1);
-			panel.add(month);
+			updateMonth(date);
 
 		}
 
 
+
+	}
+
+	private void updateMonth(Date date) {
+		month = new CalenderMonth(date, eventForm);
+
+		addEvents(month);
+
+		month.resize(Window.getClientWidth());
+		panel.remove(1);
+		panel.add(month);
 	}
 	
 	private void addEvents(final CalenderMonth tmpMonth) {
-		eventService.getEvents(tmpMonth.getStart(), tmpMonth.getEnd(), new AsyncCallback<List<Event>>() {
-			
-			@Override
-			public void onSuccess(List<Event> events) {
-				tmpMonth.setEvents(events);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+		eventService.getEvents(tmpMonth.getStart(), tmpMonth.getEnd(),
+				new AsyncCallback<List<Event>>() {
+
+					@Override
+					public void onSuccess(List<Event> events) {
+						tmpMonth.setEvents(events);
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+	}
+
+	@Override
+	public void update() {
+		updateMonth(month.getDate());
+
 	}
 }

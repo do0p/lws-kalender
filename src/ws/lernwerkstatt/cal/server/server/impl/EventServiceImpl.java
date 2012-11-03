@@ -3,6 +3,7 @@ package ws.lernwerkstatt.cal.server.server.impl;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,11 +22,12 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 		EventService {
 
 	private static final String RAUMMIETE_CAL_ID = "raummiete.lws@gmail.com";
+	private static final String DEFAULT_CAL_ID = "418212430257@developer.gserviceaccount.com";
 	private static final String CLIENT_ID = "418212430257@developer.gserviceaccount.com";
 	private static final String KEY_FILE_REL_PATH = "/WEB-INF/key.p12";
 	private static final long serialVersionUID = -1946885535483288323L;
 
-	private EventDao raummieteEvents;
+	private EventDao eventDao;
 
 	@Override
 	public void init() throws ServletException {
@@ -34,9 +36,10 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 		final File keyFile = new File(getServletContext().getRealPath(
 				KEY_FILE_REL_PATH));
 		try {
-			final HttpRequestInitializer requestInitializer = EventDaoImpl.createCredentialForServiceAccount(
-					CLIENT_ID, keyFile, CalendarScopes.CALENDAR_READONLY);
-			raummieteEvents = new EventDaoImpl(RAUMMIETE_CAL_ID, requestInitializer);
+			final HttpRequestInitializer requestInitializer = EventDaoImpl
+					.createCredentialForServiceAccount(CLIENT_ID, keyFile,
+							CalendarScopes.CALENDAR);
+			eventDao = new EventDaoImpl(requestInitializer);
 		} catch (GeneralSecurityException e) {
 			throw new ServletException("could not create event dao", e);
 		} catch (IOException e) {
@@ -46,25 +49,26 @@ public class EventServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public List<Event> getEvents(Date pStart, Date pEnd) {
-		return raummieteEvents.getEvents(pStart, pEnd);
+		final List<Event> result = new ArrayList<Event>();
+		result.addAll(eventDao.getEvents(RAUMMIETE_CAL_ID, pStart, pEnd));
+		result.addAll(eventDao.getEvents(DEFAULT_CAL_ID, pStart, pEnd));
+		return result;
 	}
 
 	@Override
 	public void storeEvent(Event pEvent) {
-		// TODO Auto-generated method stub
+		eventDao.storeEvent(DEFAULT_CAL_ID, pEvent);
 
 	}
 
 	@Override
 	public void updateEvent(Event pEvent) {
-		// TODO Auto-generated method stub
-
+		eventDao.updateEvent(DEFAULT_CAL_ID, pEvent);
 	}
 
 	@Override
 	public void deleteEvent(Event pEvent) {
-		// TODO Auto-generated method stub
-
+		eventDao.removeEvent(DEFAULT_CAL_ID, pEvent.getId());
 	}
 
 }

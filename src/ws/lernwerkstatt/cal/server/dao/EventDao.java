@@ -8,12 +8,12 @@ import ws.lernwerkstatt.cal.shared.Event;
 
 public interface EventDao {
 
-	public abstract List<Event> getEvents(Date pStartDate, Date pEndDate) throws EventServiceException;
+	public abstract List<Event> getEvents(String calendarId, Date pStartDate, Date pEndDate) throws EventServiceException;
 
-	public abstract void storeEvent(Event pEvent) throws EventServiceException;
+	public abstract String storeEvent(String calendarId, Event pEvent) throws EventServiceException;
 
-	public abstract void removeEvent(Event pEvent) throws EventServiceException;
+	public abstract void removeEvent(String calendarId, String pEventId) throws EventServiceException;
 
-	public abstract void updateEvent(Event pEvent) throws EventServiceException;
+	public abstract void updateEvent(String calendarId, Event pEvent) throws EventServiceException;
 
 }

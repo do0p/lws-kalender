@@ -13,12 +13,14 @@ import com.google.gwt.user.datepicker.client.CalendarUtil;
 
 public class CalenderMonth extends Grid {
 
-	private Date startDate;
-	private Date endDate;
+	private final Date startDate;
+	private final Date endDate;
+	private final Date date;
 	private Map<Date, DateField> days = new HashMap<Date, DateField>();
 
-	public CalenderMonth(Date date) {
+	public CalenderMonth(Date date, final EventForm eventForm) {
 		super(CalUtil.getWeeksFromDate(date), 7);
+		this.date = date;
 		setBorderWidth(1);
 		setCellSpacing(0);
 		setCellPadding(5);
@@ -28,7 +30,7 @@ public class CalenderMonth extends Grid {
 			public void execute(int r, int c, int i) {
 				final Date date = CalendarUtil.copyDate(startDate);
 				CalendarUtil.addDaysToDate(date, i);
-				final DateField dateField = new DateField(date);
+				final DateField dateField = new DateField(date, eventForm);
 				days.put(date, dateField);
 				setWidget(r, c, dateField);
 			}
@@ -36,10 +38,6 @@ public class CalenderMonth extends Grid {
 		endDate = CalendarUtil.copyDate(startDate);
 		CalendarUtil.addDaysToDate(endDate, count);
 
-	}
-
-	public CalenderMonth() {
-		this(new Date());
 	}
 
 	public void resize(int clientWidth) {
@@ -97,6 +95,10 @@ public class CalenderMonth extends Grid {
 		if (dateField != null) {
 			dateField.addEevent(event);
 		}
+	}
+
+	public Date getDate() {
+		return date;
 	}
 
 }
