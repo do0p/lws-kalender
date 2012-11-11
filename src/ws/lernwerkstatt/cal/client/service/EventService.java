@@ -1,4 +1,4 @@
-package ws.lernwerkstatt.cal.client;
+package ws.lernwerkstatt.cal.client.service;
 
 import java.util.Date;
 import java.util.List;

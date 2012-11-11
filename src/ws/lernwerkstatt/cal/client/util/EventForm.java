@@ -1,9 +1,11 @@
-package ws.lernwerkstatt.cal.client;
+package ws.lernwerkstatt.cal.client.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import ws.lernwerkstatt.cal.client.service.EventService;
+import ws.lernwerkstatt.cal.client.service.EventServiceAsync;
 import ws.lernwerkstatt.cal.shared.Event;
 
 import com.google.gwt.core.client.GWT;

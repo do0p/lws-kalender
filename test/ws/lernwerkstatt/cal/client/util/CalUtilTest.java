@@ -1,9 +1,11 @@
-package ws.lernwerkstatt.cal.client;
+package ws.lernwerkstatt.cal.client.util;
 
 import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import ws.lernwerkstatt.cal.client.util.CalUtil;
 
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 

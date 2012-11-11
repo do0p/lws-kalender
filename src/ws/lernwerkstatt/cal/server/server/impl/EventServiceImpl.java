@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
-import ws.lernwerkstatt.cal.client.EventService;
+import ws.lernwerkstatt.cal.client.service.EventService;
 import ws.lernwerkstatt.cal.server.dao.EventDao;
 import ws.lernwerkstatt.cal.server.dao.impl.EventDaoImpl;
 import ws.lernwerkstatt.cal.shared.Event;

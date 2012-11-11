@@ -53,7 +53,7 @@ public class EventDaoImpl implements EventDao {
 	public String storeEvent(String calendarId, Event event)
 			throws EventServiceException {
 		try {
-			return calendar.events().insert(calendarId, map(event)).execute()
+			return calendar.events().insert(calendarId, map(event, null)).execute()
 					.getId();
 		} catch (IOException e) {
 			throw new EventServiceException("could not store event " + event
@@ -76,7 +76,8 @@ public class EventDaoImpl implements EventDao {
 	public void updateEvent(String calendarId, Event pEvent)
 			throws EventServiceException {
 		try {
-			calendar.events().update(calendarId, pEvent.getId(), map(pEvent)).execute();
+			Integer sequence = calendar.events().get(calendarId, pEvent.getId()).execute().getSequence();
+			calendar.events().patch(calendarId, pEvent.getId(), map(pEvent, sequence)).execute();
 		} catch (IOException e) {
 			throw new EventServiceException("could not update event " + pEvent
 					+ " in calendar " + calendarId, e);
@@ -130,8 +131,9 @@ public class EventDaoImpl implements EventDao {
 		return result;
 	}
 
-	private com.google.api.services.calendar.model.Event map(Event event) {
+	private com.google.api.services.calendar.model.Event map(Event event, Integer sequence) {
 		final com.google.api.services.calendar.model.Event jsonEvent = new com.google.api.services.calendar.model.Event();
+		jsonEvent.setSequence(sequence);
 		jsonEvent.setSummary(event.getTitle());
 		jsonEvent.setDescription(event.getDescription());
 		jsonEvent.setStart(convertToEventDateTime(event.getStartDate()));

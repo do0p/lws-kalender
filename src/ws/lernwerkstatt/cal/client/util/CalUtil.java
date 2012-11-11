@@ -1,4 +1,4 @@
-package ws.lernwerkstatt.cal.client;
+package ws.lernwerkstatt.cal.client.util;
 
 import java.util.Date;
 
@@ -15,6 +15,7 @@ public class CalUtil {
 		return tmpDate;
 	}
 
+	@SuppressWarnings("deprecation")
 	static void resetTimeToMidnight(final Date tmpDate) {
 		tmpDate.setTime((tmpDate.getTime() / 1000) * 1000);
 		tmpDate.setHours(0);

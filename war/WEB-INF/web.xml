@@ -13,7 +13,7 @@
   
   <!-- Default page to serve -->
   <welcome-file-list>
-    <welcome-file>Lws_kalender.html</welcome-file>
+    <welcome-file>LwsKalender.html</welcome-file>
   </welcome-file-list>
 
   <servlet>
@@ -40,5 +40,23 @@
     <servlet-name>eventServlet</servlet-name>
     <url-pattern>/lws_kalender/event</url-pattern>
   </servlet-mapping>  
-   
+  
+  	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+  
+  	<servlet>
+		<servlet-name>authServlet</servlet-name>
+		<servlet-class>ws.lernwerkstatt.cal.server.server.impl.AuthorizationServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>authServlet</servlet-name>
+		<url-pattern>/lws_kalender/auth</url-pattern>
+	</servlet-mapping>
+  
 </web-app>
