@@ -24,15 +24,31 @@ public class AuthorizationDaoImpl implements AuthorizationDao {
 	static {
 		SUPER_USER_IDS.add("dbrandl72@gmail.com");
 	}
-	
-	private final MemcacheService cache = MemcacheServiceFactory.getMemcacheService("authDao");
+
+	private final MemcacheService cache = MemcacheServiceFactory
+			.getMemcacheService("authDao");
 
 	public AuthorizationDaoImpl() {
 		initCache();
 	}
 
 	public Authorization getAuthorization(User user) {
-		return (Authorization) cache.get(createUserId(user));
+		final String userId = createUserId(user);
+		Authorization authorization = (Authorization) cache.get(userId);
+		if (authorization == null) {
+			if (SUPER_USER_IDS.contains(userId)) {
+				authorization = createSuperUser(userId);
+			} else {
+				final EntityManager em = EMF.get().createEntityManager();
+				try {
+					authorization = em.find(Authorization.class, userId);
+				} finally {
+					em.close();
+				}
+			}
+			cache.put(userId, authorization);
+		}
+		return authorization;
 	}
 
 	public Collection<Authorization> queryAuthorizations() {
@@ -81,7 +97,6 @@ public class AuthorizationDaoImpl implements AuthorizationDao {
 		cache.putAll(queryAuthInternal());
 	}
 
-
 	@SuppressWarnings("unchecked")
 	private Map<String, Authorization> queryAuthInternal() {
 		final Map<String, Authorization> tmpCache = new HashMap<String, Authorization>();
@@ -90,8 +105,10 @@ public class AuthorizationDaoImpl implements AuthorizationDao {
 		}
 		final EntityManager em = EMF.get().createEntityManager();
 		try {
-			final Query query = em.createQuery("select auth from Authorization auth");
-			for (Authorization auth : (List<Authorization>) query.getResultList()) {
+			final Query query = em
+					.createQuery("select auth from Authorization auth");
+			for (Authorization auth : (List<Authorization>) query
+					.getResultList()) {
 				tmpCache.put(auth.getUserId(), auth);
 			}
 		} finally {
