@@ -6,8 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 @Entity
-public class Authorization implements Serializable {
+public class Authorization implements Serializable, IsSerializable {
 
 	private static final long serialVersionUID = -5057466504583370610L;
 
@@ -19,7 +21,6 @@ public class Authorization implements Serializable {
 	private boolean admin;
 	
 	private boolean seeAll;
-
 	
 	@Transient
 	private String loginUrl;
@@ -29,7 +30,6 @@ public class Authorization implements Serializable {
 
 	@Transient
 	private boolean loggedIn;
-	
 	
 	public boolean isLoggedIn() {
 		return loggedIn;
@@ -87,19 +87,18 @@ public class Authorization implements Serializable {
 		this.admin = admin;
 	}
 
-
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Authorization)) {
 			return false;
 		}
 		final Authorization other = (Authorization) obj;
-		return userId.equals(other.userId);
+		return userId == null ? other == null : userId.equals(other.userId);
 	}
 
 	@Override
 	public int hashCode() {
-		return userId.hashCode();
+		return userId == null ? 0: userId.hashCode();
 	}
 
 }

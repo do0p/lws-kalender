@@ -2,6 +2,7 @@ package ws.lernwerkstatt.cal.client;
 
 import ws.lernwerkstatt.cal.client.service.AuthorizationService;
 import ws.lernwerkstatt.cal.client.service.AuthorizationServiceAsync;
+import ws.lernwerkstatt.cal.client.util.PopUp;
 import ws.lernwerkstatt.cal.shared.Authorization;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -15,8 +16,10 @@ public abstract class SecuredContent implements EntryPoint {
 			.create(AuthorizationService.class);
 
 	private Authorization authorization;
+	private PopUp popUp;
 
 	public final void onModuleLoad() {
+		popUp = new PopUp();
 		executeSecured(this);
 	}
 
@@ -27,6 +30,8 @@ public abstract class SecuredContent implements EntryPoint {
 
 					@Override
 					public void onFailure(Throwable caught) {
+						popUp.setErrorMessage(caught.getMessage());
+						popUp.show();
 
 					}
 

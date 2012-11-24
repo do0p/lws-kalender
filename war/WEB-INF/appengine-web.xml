@@ -22,6 +22,7 @@
   <resource-files>
       <include path="**.p12" />
       <include path="**.properties" />
+      <include path="**.gwt.rpc" />
   </resource-files>
   
   <!-- Configure java.util.logging -->

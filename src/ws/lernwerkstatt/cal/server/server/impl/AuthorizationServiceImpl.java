@@ -7,6 +7,7 @@ import ws.lernwerkstatt.cal.server.dao.AuthorizationDao;
 import ws.lernwerkstatt.cal.server.dao.impl.AuthorizationDaoImpl;
 import ws.lernwerkstatt.cal.shared.Authorization;
 
+import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -72,7 +73,12 @@ public class AuthorizationServiceImpl extends RemoteServiceServlet implements
 	}
 
 	private Authorization getAuthorizationForCurrentUserInternal() {
-		return authorizationDao.getAuthorization(userService.getCurrentUser());
+		User currentUser = userService.getCurrentUser();
+		if(currentUser == null)
+		{
+			return null;
+		}
+		return authorizationDao.getAuthorization(currentUser);
 	}
 
 }

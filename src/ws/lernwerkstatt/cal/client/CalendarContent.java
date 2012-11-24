@@ -8,6 +8,7 @@ import ws.lernwerkstatt.cal.client.service.EventServiceAsync;
 import ws.lernwerkstatt.cal.client.util.CalenderMonth;
 import ws.lernwerkstatt.cal.client.util.EventForm;
 import ws.lernwerkstatt.cal.client.util.EventForm.UpdateListener;
+import ws.lernwerkstatt.cal.client.util.PopUp;
 import ws.lernwerkstatt.cal.shared.Event;
 
 import com.google.gwt.core.client.GWT;
@@ -28,12 +29,14 @@ public class CalendarContent extends VerticalPanel implements UpdateListener {
 	private final EventForm eventForm;
 	private final ListBox yearSelection;
 	private final ListBox monthSelection;
+	private PopUp popUp;
 	private  CalenderMonth month;
 	
 
 	@SuppressWarnings("deprecation")
 	public CalendarContent()
 	{
+		popUp = new PopUp();
 		eventForm = new EventForm();
 		eventForm.registerUpdateListener(this);
 		final Date date = new Date();
@@ -99,6 +102,7 @@ public class CalendarContent extends VerticalPanel implements UpdateListener {
 		eventService.getEvents(tmpMonth.getStart(), tmpMonth.getEnd(),
 				new AsyncCallback<List<Event>>() {
 
+
 					@Override
 					public void onSuccess(List<Event> events) {
 						tmpMonth.setEvents(events);
@@ -106,6 +110,9 @@ public class CalendarContent extends VerticalPanel implements UpdateListener {
 
 					@Override
 					public void onFailure(Throwable caught) {
+						popUp.setErrorMessage(caught.getMessage());
+						popUp.show();
+
 						
 					}
 				});
