@@ -1,2 +1,4 @@
 # Module lws_kalender
 # RPC service class, partial path of RPC policy file
+ws.lernwerkstatt.cal.client.service.EventService, ABA2B1506A0AF35F7762DFCA312C1883.gwt.rpc
+ws.lernwerkstatt.cal.client.service.AuthorizationService, A108F441569B920B564E5EBC92E1B9B7.gwt.rpc

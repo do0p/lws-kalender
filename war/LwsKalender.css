@@ -28,6 +28,26 @@ h1 {
   color: red;
 }
 
+.red {
+  color: maroon;	
+}
+
+.blue {
+  color: navy;
+}
+
+.green {
+  color: green;
+}
+
+.black {
+  color: black;	
+}
+
+.purple {
+  color: purple;
+}
+
 /** Set ids using widget.getElement().setId("idOfElement") */
 #closeButton {
   margin: 15px 6px 6px;

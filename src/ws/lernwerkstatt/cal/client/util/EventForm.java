@@ -3,6 +3,7 @@ package ws.lernwerkstatt.cal.client.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import ws.lernwerkstatt.cal.client.service.EventService;
 import ws.lernwerkstatt.cal.client.service.EventServiceAsync;
@@ -21,6 +22,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -34,13 +36,13 @@ public class EventForm extends DialogBox {
 
 	}
 
-
 	private final DateTimeFormat dateTimeFormat;
 
 	private TextBox title;
 	private DateBox startDate;
 	private DateBox endDate;
 	private TextArea description;
+	private Label calendarName;
 
 	private Button closeButton;
 	private Button newButton;
@@ -55,8 +57,11 @@ public class EventForm extends DialogBox {
 
 	private Collection<UpdateListener> updateListeners = new ArrayList<EventForm.UpdateListener>();
 
+	private List<String> writeableCalendars;
+
 	public EventForm() {
 		setModal(true);
+		calendarName = new Label();
 		dateTimeFormat = DateTimeFormat.getFormat("d.M.yy HH:mm");
 
 		setText("Termin");
@@ -85,13 +90,11 @@ public class EventForm extends DialogBox {
 		description = new TextArea();
 
 		buttons = new HorizontalPanel();
-		
+
 		// create panel
 		panel = createPanel();
 		setWidget(panel);
 
-		
-		
 		// create buttons
 		createCloseButton();
 		createNewButton();
@@ -112,6 +115,7 @@ public class EventForm extends DialogBox {
 		startDate.setValue(pEvent.getStartDate());
 		endDate.setValue(pEvent.getEndDate());
 		description.setValue(pEvent.getDescription());
+		calendarName.setText(pEvent.getCalendarName());
 	}
 
 	private void clearEvent() {
@@ -124,6 +128,7 @@ public class EventForm extends DialogBox {
 
 	private Event getEvent() {
 		final Event event = new Event();
+		event.setCalendarName(calendarName.getText());
 		event.setId(id);
 		event.setStartDate(startDate.getValue());
 		event.setEndDate(endDate.getValue());
@@ -134,18 +139,22 @@ public class EventForm extends DialogBox {
 
 	public void setupForEdit() {
 		setText("Termin editieren");
+
 		buttons.add(editButton);
 		buttons.add(deleteButton);
+
 		buttons.add(closeButton);
 	}
 
 	public void setupForNew() {
 		setText("Termin anlegen");
+		calendarName.setText(writeableCalendars.get(0));
 		buttons.add(newButton);
 		buttons.add(closeButton);
 	}
 
 	public void setupForShow() {
+		setText("Termin anzeigen");
 		buttons.add(closeButton);
 	}
 
@@ -153,11 +162,9 @@ public class EventForm extends DialogBox {
 		newButton = new Button("Speichern");
 		newButton.addClickHandler(new ClickHandler() {
 
-
 			public void onClick(ClickEvent pClickEvent) {
 				final Event event = getEvent();
-				eventService.storeEvent(event,
-						createAsyncSuccessCallback());
+				eventService.storeEvent(event, createAsyncSuccessCallback());
 			}
 
 		});
@@ -169,8 +176,7 @@ public class EventForm extends DialogBox {
 
 			public void onClick(ClickEvent pClickEvent) {
 				final Event event = getEvent();
-				eventService.deleteEvent(event,
-						createAsyncSuccessCallback());
+				eventService.deleteEvent(event, createAsyncSuccessCallback());
 			}
 		});
 	}
@@ -181,8 +187,7 @@ public class EventForm extends DialogBox {
 
 			public void onClick(ClickEvent pClickEvent) {
 				final Event event = getEvent();
-				eventService.updateEvent(event,
-						createAsyncSuccessCallback());
+				eventService.updateEvent(event, createAsyncSuccessCallback());
 			}
 		});
 	}
@@ -209,23 +214,22 @@ public class EventForm extends DialogBox {
 				hide();
 				clearEvent();
 				removeAllButtons();
-				for(UpdateListener listener : updateListeners)
-				{
+				for (UpdateListener listener : updateListeners) {
 					listener.update();
 				}
 			}
 		};
 	}
 
-	public void registerUpdateListener(UpdateListener listener)
-	{
-		updateListeners .add(listener);
+	public void registerUpdateListener(UpdateListener listener) {
+		updateListeners.add(listener);
 	}
-	
+
 	private Panel createPanel() {
 		final FlexTable eventForm = new FlexTable();
 		eventForm.addStyleName("dialogVPanel");
 		int row = 0;
+		insertRow(row++, "Kalender", calendarName, eventForm);
 		insertRow(row++, "Title", title, eventForm);
 		insertRow(row++, "Beginn", startDate, eventForm);
 		insertRow(row++, "Ende", endDate, eventForm);
@@ -237,15 +241,20 @@ public class EventForm extends DialogBox {
 		return eventForm;
 	}
 
-	private void insertRow(int pRow, String pLabel, Widget pField, FlexTable pEventForm) {
+	private void insertRow(int pRow, String pLabel, Widget pField,
+			FlexTable pEventForm) {
 		int column = 0;
 		pEventForm.insertRow(pRow);
 		pEventForm.addCell(pRow);
 		pEventForm.setHTML(pRow, column, pLabel);
-		pEventForm.getFlexCellFormatter().setAlignment(pRow, column++, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_TOP);
+		pEventForm.getFlexCellFormatter().setAlignment(pRow, column++,
+				HasHorizontalAlignment.ALIGN_RIGHT,
+				HasVerticalAlignment.ALIGN_TOP);
 		pEventForm.addCell(pRow);
 		pEventForm.setWidget(pRow, column, pField);
-		pEventForm.getFlexCellFormatter().setAlignment(pRow, column, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP);
+		pEventForm.getFlexCellFormatter().setAlignment(pRow, column,
+				HasHorizontalAlignment.ALIGN_LEFT,
+				HasVerticalAlignment.ALIGN_TOP);
 	}
 
 	private void removeAllButtons() {
@@ -255,10 +264,21 @@ public class EventForm extends DialogBox {
 		buttons.remove(deleteButton);
 	}
 
-
-	public void setStartDate(Date startDate)
-	{
+	public void setStartDate(Date startDate) {
 		this.startDate.setValue(startDate, true);
+	}
+
+	public void setWriteAbleCalendars(List<String> writeableCalendars) {
+		this.writeableCalendars = writeableCalendars;
+
+	}
+
+	public List<String> getWriteableCalendars() {
+		return writeableCalendars;
+	}
+
+	public void setWriteableCalendars(List<String> writeableCalendars) {
+		this.writeableCalendars = writeableCalendars;
 	}
 
 }

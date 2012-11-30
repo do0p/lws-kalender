@@ -16,6 +16,8 @@ public class Event implements Serializable, Comparable<Event>, IsSerializable {
 	private Date endDate;
 	private String description;
 	private String location;
+	private String calendarName;
+	private String style;
 
 	public Date getStartDate() {
 		return startDate;
@@ -88,6 +90,22 @@ public class Event implements Serializable, Comparable<Event>, IsSerializable {
 
 	public String getLocation() {
 		return location;
+	}
+
+	public void setCalendarName(String calendarName) {
+		this.calendarName = calendarName;
+	}
+
+	public String getCalendarName() {
+		return calendarName;
+	}
+
+	public String getStyle() {
+		return style;
+	}
+
+	public void setStyle(String style) {
+		this.style = style;
 	}
 
 

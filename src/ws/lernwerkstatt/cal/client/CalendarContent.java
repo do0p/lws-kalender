@@ -39,6 +39,20 @@ public class CalendarContent extends VerticalPanel implements UpdateListener {
 		popUp = new PopUp();
 		eventForm = new EventForm();
 		eventForm.registerUpdateListener(this);
+		eventService.getWriteableCalendars(new AsyncCallback<List<String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				popUp.setErrorMessage(caught.getMessage());
+				popUp.show();
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				eventForm.setWriteAbleCalendars(result);		
+			}
+		});
+		
 		final Date date = new Date();
 		month = new CalenderMonth(date, eventForm);
 		addEvents(month);

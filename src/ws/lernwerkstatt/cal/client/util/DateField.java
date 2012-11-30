@@ -19,10 +19,10 @@ public class DateField extends VerticalPanel {
 
 	@SuppressWarnings("deprecation")
 	public DateField(final Date date, final EventForm eventBox) {
+
 		this.eventBox = eventBox;
 		setVerticalAlignment(ALIGN_TOP);
-		
-		
+
 		final HorizontalPanel dateFieldHead = new HorizontalPanel();
 		dateFieldHead.setSpacing(10);
 		dateFieldHead.add(new Label(Integer.toString(date.getDate())));
@@ -36,18 +36,22 @@ public class DateField extends VerticalPanel {
 			}
 		});
 		dateFieldHead.add(newLink);
-		
+
 		add(dateFieldHead);
-		
+
 	}
 
 	public void addEevent(final Event event) {
-		final Label eventLabel = new Label(formatEvent(event));
+		final Label eventLabel = createLabelFromEvent(event);
 		eventLabel.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent clickEvent) {
-				eventBox.setupForEdit();
+				if (eventBox.getWriteableCalendars().contains(event.getCalendarName())) {
+					eventBox.setupForEdit();
+				} else {
+					eventBox.setupForShow();
+				}
 				eventBox.showRelativeTo(eventLabel);
 				eventBox.setEvent(event);
 			}
@@ -55,14 +59,16 @@ public class DateField extends VerticalPanel {
 		add(eventLabel);
 	}
 
-	private String formatEvent(Event event) {
+	private Label createLabelFromEvent(Event event) {
 		final String date;
 		if (event.getStartDate() != null) {
 			date = dateTimeFormat.format(event.getStartDate()) + " ";
 		} else {
 			date = "";
 		}
-		return date + event.getTitle();
+		final Label label = new Label(date + event.getTitle());
+		label.addStyleName(event.getStyle());
+		return label;
 	}
 
 }

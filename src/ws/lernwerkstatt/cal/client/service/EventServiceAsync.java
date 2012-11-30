@@ -17,4 +17,6 @@ public interface EventServiceAsync {
 
 	void updateEvent(Event pEvent, AsyncCallback<Void> callback);
 
+	void getWriteableCalendars(AsyncCallback<List<String>> callback);
+
 }

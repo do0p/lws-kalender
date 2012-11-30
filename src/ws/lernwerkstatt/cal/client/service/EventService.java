@@ -12,6 +12,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface EventService extends RemoteService
 {
 	List<Event> getEvents(Date pStart, Date pEnd);
+
+	List<String> getWriteableCalendars();
 	
 	void storeEvent(Event pEvent);
 
