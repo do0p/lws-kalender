@@ -81,19 +81,31 @@ public class CalenderMonth extends Grid {
 			CalUtil.resetTimeToMidnight(startDay);
 			addEvent(startDay, event);
 
-			final Date endDay = CalendarUtil.copyDate(event.getStartDate());
+			final Date endDay = CalendarUtil.copyDate(event.getEndDate());
 			CalUtil.resetTimeToMidnight(endDay);
 			if(endDay.after(startDay))
 			{
+				int numDays = CalendarUtil.getDaysBetween(startDay, endDay);
+				for(int i = 1; i < numDays; i++)
+				{
+					final Date dayBetween = CalendarUtil.copyDate(startDay);
+					CalUtil.resetTimeToMidnight(dayBetween);
+					CalendarUtil.addDaysToDate(dayBetween, i);
+					addEvent(dayBetween, event);
+				}
 				addEvent(endDay, event);
 			}
 		}
+		for(DateField day : days.values())
+		{
+			day.formatDay();
+		}
 	}
 
-	public void addEvent(final Date day, Event event) {
+	private void addEvent(Date day, Event event) {
 		final DateField dateField = days.get(day);
 		if (dateField != null) {
-			dateField.addEevent(event);
+			dateField.addEvent(event);
 		}
 	}
 
