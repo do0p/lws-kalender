@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -15,7 +16,7 @@ import ws.lernwerkstatt.cal.shared.Event;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
@@ -169,7 +170,7 @@ public class EventDaoImpl implements EventDao {
 				.setTransport(new NetHttpTransport())
 				.setJsonFactory(new JacksonFactory())
 				.setServiceAccountId(serviceAccountId)
-				.setServiceAccountScopes(serviceAccountScopes)
+				.setServiceAccountScopes(Arrays.asList(serviceAccountScopes))
 				.setServiceAccountPrivateKeyFromP12File(p12File).build();
 	}
 
